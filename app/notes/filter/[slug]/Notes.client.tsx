@@ -8,7 +8,7 @@ import { useParams } from 'next/navigation';
 
 export default function FilterNotesClient() {
   const { slug } = useParams<{ slug: string }>();
-  const selectTag = slug === 'all' ? '' : slug;
+  const selectTag = slug === 'all' ? undefined : slug;
 
   console.log(selectTag);
 

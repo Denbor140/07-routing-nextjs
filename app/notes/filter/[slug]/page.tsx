@@ -11,7 +11,7 @@ interface NotesTagPageProps {
 }
 
 export default async function NotesTagPage({ params }: NotesTagPageProps) {
-  const selectTag = params.slug === 'all' ? '' : params.slug;
+  const selectTag = params.slug === 'all' ? undefined : params.slug;
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
