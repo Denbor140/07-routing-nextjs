@@ -1,4 +1,4 @@
-import { fetchNoteByTag } from '@/lib/api';
+import { fetchNotes } from '@/lib/api';
 import {
   dehydrate,
   HydrationBoundary,
@@ -7,17 +7,16 @@ import {
 import FilterNotesClient from './Notes.client';
 
 interface NotesTagPageProps {
-  params: Promise<{ tag: string }>;
+  params: { slug: string };
 }
 
 export default async function NotesTagPage({ params }: NotesTagPageProps) {
-  const { tag } = await params;
-  const selectTag = tag;
+  const selectTag = params.slug === 'all' ? '' : params.slug;
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ['tag', { selectTag }],
-    queryFn: () => fetchNoteByTag(selectTag),
+    queryKey: ['tag', selectTag],
+    queryFn: () => fetchNotes('', 1, 12, selectTag),
   });
 
   return (

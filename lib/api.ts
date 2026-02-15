@@ -21,7 +21,6 @@ export const fetchNotes = async (
       search: searchText,
       page,
       perPage,
-      tag,
     },
     headers: {
       Authorization: `Bearer ${token}`,
@@ -59,12 +58,12 @@ export const fetchNoteById = async (id: string): Promise<Note> => {
   return data;
 };
 
-export const fetchNoteByTag = async (tag?: string): Promise<Note[]> => {
-  const { data } = await axios.get<Note[]>(`/notes`, {
-    params: { tag },
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return data;
-};
+// export const fetchNoteByTag = async (tag?: string): Promise<Note[]> => {
+//   const { data } = await axios.get<Note[]>(`/notes`, {
+//     params: { tag },
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+//   return data;
+// };
