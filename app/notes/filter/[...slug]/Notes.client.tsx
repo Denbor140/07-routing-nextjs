@@ -7,10 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
 export default function FilterNotesClient() {
-  const { slug } = useParams<{ slug: string }>();
-  const selectTag = slug === 'all' ? undefined : slug;
-
-  console.log(selectTag);
+  const { slug } = useParams<{ slug: string[] }>();
+  const selectTag = slug[0] === 'all' ? undefined : slug[0];
 
   const { data } = useQuery({
     queryKey: ['tag', selectTag],
