@@ -5,5 +5,5 @@ interface ErrorProps {
 }
 
 export default function Error({ error }: ErrorProps) {
-  return <p>Failed to load notes. {error.message}</p>;
+  return <p>Could not fetch the list of notes. {error.message}</p>;
 }

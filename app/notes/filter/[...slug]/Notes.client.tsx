@@ -1,20 +1,72 @@
 'use client';
 
+import css from './NotesPage.module.css';
+import Modal from '@/components/Modal/Modal';
+import NoteForm from '@/components/NoteForm/NoteForm';
 import NoteList from '@/components/NoteList/NoteList';
-import { fetchNotes } from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
-
+import Pagination from '@/components/Pagination/Pagination';
+import SearchBox from '@/components/SearchBox/SearchBox';
+import { fetchNotes, FetchNotesResponse } from '@/lib/api';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
+import { useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
-export default function FilterNotesClient() {
+const PER_PAGE = 12;
+
+interface NotesClientProps {
+  clientSearchText: string;
+  clientPage: number;
+}
+
+export default function NotesClient({
+  clientSearchText,
+  clientPage,
+}: NotesClientProps) {
   const { slug } = useParams<{ slug: string[] }>();
-  const selectTag = slug[0] === 'all' ? undefined : slug[0];
+  const tag = slug[0] === 'all' ? undefined : slug[0];
+  const [searchText, setSearchText] = useState(clientSearchText);
+  const [page, setPage] = useState(clientPage);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data } = useQuery({
-    queryKey: ['tag', selectTag],
-    queryFn: () => fetchNotes('', 1, 12, selectTag),
+  const { data } = useQuery<FetchNotesResponse>({
+    queryKey: ['notes', searchText, page, tag],
+    queryFn: () => fetchNotes(searchText, page, PER_PAGE, tag),
     refetchOnMount: false,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+    throwOnError: true,
   });
 
-  return <NoteList notes={data?.notes ?? []} />;
+  const debounceSearchText = useDebouncedCallback((text: string) => {
+    setSearchText(text);
+    setPage(1);
+  }, 300);
+
+  return (
+    <main className={css.main}>
+      <div className={css.note}>
+        <div className={css.toolbar}>
+          <SearchBox text={searchText} onSearch={debounceSearchText} />
+          {data && data.totalPages > 1 && (
+            <Pagination
+              totalPages={data.totalPages}
+              page={page}
+              onPageChange={setPage}
+            />
+          )}
+          <button className={css.button} onClick={() => setIsModalOpen(true)}>
+            Create note +
+          </button>
+        </div>
+        {isModalOpen && (
+          <Modal onClose={() => setIsModalOpen(false)}>
+            <NoteForm onClose={() => setIsModalOpen(false)} />
+          </Modal>
+        )}
+        {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
+      </div>
+    </main>
+  );
 }
