@@ -1,11 +1,10 @@
-import { text } from 'stream/consumers';
-import css from './Home.module.css';
+import css from './not-found.module.css';
 
 export default function NotFound() {
   return (
     <>
       <h1 className={css.title}>404 - Page not found</h1>
-      <p className={css.description} style={{ textAlign: 'center' }}>
+      <p className={css.description}>
         Sorry, the page you are looking for does not exist.
       </p>
     </>

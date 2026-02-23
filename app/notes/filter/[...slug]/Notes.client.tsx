@@ -8,7 +8,6 @@ import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import { fetchNotes, FetchNotesResponse } from '@/lib/api';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -17,14 +16,14 @@ const PER_PAGE = 12;
 interface NotesClientProps {
   clientSearchText: string;
   clientPage: number;
+  tag?: string;
 }
 
 export default function NotesClient({
   clientSearchText,
   clientPage,
+  tag,
 }: NotesClientProps) {
-  const { slug } = useParams<{ slug: string[] }>();
-  const tag = slug[0] === 'all' ? undefined : slug[0];
   const [searchText, setSearchText] = useState(clientSearchText);
   const [page, setPage] = useState(clientPage);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -5,7 +5,6 @@ import {
 } from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api';
 import NotesClient from './Notes.client';
-import { notFound } from 'next/navigation';
 
 const PER_PAGE = 12;
 
@@ -36,7 +35,7 @@ export default async function NotesPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotesClient clientPage={page} clientSearchText={searchText} />
+      <NotesClient clientPage={page} clientSearchText={searchText} tag={tag} />
     </HydrationBoundary>
   );
 }
